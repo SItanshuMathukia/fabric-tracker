@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os 
 
-DATABASE_URL = "postgresql://postgres:root@localhost:5432/fabric_db"
+DATABASE_URL = os.getenv("postgresql://postgres:root@localhost:5432/fabric_db")
 # ⚠️ use same password you used in docker (you said root earlier)
 
 engine = create_engine(
