@@ -1,26 +1,33 @@
-from sqlalchemy import Column, String, Float, ForeignKey
+from sqlalchemy import Column, String, Float, ForeignKey, Integer, Date
 from sqlalchemy.orm import relationship
 import uuid
+from datetime import date
 
 from app.core.database import Base
 
 
 class FabricBatch(Base):
-    __tablename__ = "batches"
+    __tablename__ = "fabric_batch"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    color = Column(String, nullable=False)
-    meters = Column(Float, nullable=False)
+    id = Column(String, primary_key=True, index=True, autoincrement=True)
+    color = Column(String)
+    party = Column(String)
+    date = Column(Date)
+    rate = Column(Integer)
+    meters = Column(Float)
+    price = Column(Integer)
 
-    transactions = relationship("FabricTransaction", back_populates="batches")
+    transactions = relationship("FabricTransaction", back_populates="batch")
 
 
 class FabricTransaction(Base):
-    __tablename__ = "transactions"
+    __tablename__ = "fabric_transactions"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    batch_id = Column(String, ForeignKey("batches.id"), nullable=False)
-    action = Column(String, nullable=False)
-    meters = Column(Float, nullable=False)
+    batch_id = Column(String, ForeignKey("fabric_batch.id"))  
+    action = Column(String)
+    action_type = Column(String)
+    meters = Column(Float)
+    date = Column(Date)
 
     batch = relationship("FabricBatch", back_populates="transactions")

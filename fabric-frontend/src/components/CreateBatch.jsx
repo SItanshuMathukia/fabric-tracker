@@ -4,17 +4,26 @@ import { createBatch } from "../api/api";
 export default function CreateBatch({ onCreated }) {
   const [id, setId] = useState(""); 
   const [color, setColor] = useState("");
+  const [party, setParty] = useState("");
+  const [date, setDate] = useState("");
+  const [rate, setRate] = useState("");
   const [meters, setMeters] = useState("");
+  const [price, setPrice] = useState("");
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await createBatch({ id: Number(id), color, meters: Number(meters) });
+    const res = await createBatch({ id, color, party, date, rate: Number(rate), price: Number(price), meters: Number(meters) });
     onCreated(res.data);
 
     setId("");
     setColor("");
+    setParty("");
+    setDate("");
+    setRate("");
     setMeters("");
+    setPrice("");
   };
 
   return (
@@ -24,7 +33,6 @@ export default function CreateBatch({ onCreated }) {
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
           placeholder="Id"
-          type="number"
           value={id}
           onChange={(e) => setId(e.target.value)}
           className="w-full p-2 border rounded"
@@ -37,11 +45,43 @@ export default function CreateBatch({ onCreated }) {
           className="w-full p-2 border rounded"
         />
 
+
+        <input
+          placeholder="Party"
+          value={party}
+          onChange={(e) => setParty(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+
+        <input
+          placeholder="Date"
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+
+        <input
+          placeholder="Rate"
+          type="number"
+          value={rate}
+          onChange={(e) => setRate(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+
         <input
           placeholder="Meters"
           type="number"
           value={meters}
           onChange={(e) => setMeters(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+
+        <input
+          placeholder="Price"
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
           className="w-full p-2 border rounded"
         />
 

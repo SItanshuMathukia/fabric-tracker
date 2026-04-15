@@ -35,7 +35,11 @@ def create_batch(batch: BatchCreate, db: Session = Depends(get_db)):
     new_batch = FabricBatch(
         id=batch.id,
         color=batch.color,
-        meters=batch.meters
+        party = batch.party,
+        date = batch.date,
+        rate = batch.rate,
+        meters = batch.meters,
+        price = batch.rate * batch.meters
     )
 
     db.add(new_batch)
@@ -47,6 +51,7 @@ def create_batch(batch: BatchCreate, db: Session = Depends(get_db)):
         id=str(uuid.uuid4()),
         batch_id=new_batch.id,
         action="create",
+        date=batch.date,
         meters=batch.meters
     )
 
@@ -81,7 +86,9 @@ def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
     new_txn = FabricTransaction(
         batch_id=txn.batch_id,
         action=txn.action,
-        meters=txn.meters
+        action_type=txn.action_type,
+        meters=txn.meters,
+        date=txn.date
     )
 
     db.add(new_txn)

@@ -5,6 +5,9 @@ export default function AddTransaction() {
   const [batchId, setBatchId] = useState("");
   const [meters, setMeters] = useState("");
   const [action, setAction] = useState("add");
+  const [action_type, setAction_Type] = useState("");
+  const [date, setDate] = useState("");
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,6 +15,8 @@ export default function AddTransaction() {
     await addTransaction({
       batch_id: batchId,
       action,
+      action_type,
+      date,
       meters: Number(meters),
     });
 
@@ -38,6 +43,21 @@ export default function AddTransaction() {
           <option value="add">Add</option>
           <option value="remove">Remove</option>
         </select>
+
+        <input
+          placeholder="Action Type"
+          value={action_type}
+          onChange={(e) => setAction_Type(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+
+         <input
+          placeholder="Date"
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
 
         <input
           placeholder="Meters"
