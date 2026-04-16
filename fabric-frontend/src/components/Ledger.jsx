@@ -1,63 +1,69 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getLedger } from "../api/api";
 
 export default function Ledger() {
+  const [data, setData] = useState([]);
+  const [filter, setFilter] = useState("all");
+
   const [batchId, setBatchId] = useState("");
-  const [data, setData] = useState(null);
 
-  const fetchLedger = async () => {
+  const fetchData = async () => {
     try {
-      const res = await getLedger(batchId);
+      const res = await getLedger(batchId || "all");
       setData(res.data);
-    } catch (error) {
-      console.error(error);
-
-      // Show alert message
-      alert(
-        error.response?.data?.detail || 
-        "Failed to fetch ledger. Please check Batch ID."
-      );
-
-      setData(null); // clear old data if error
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  return (
-    <div className="p-4 bg-white rounded-2xl shadow-md">
-      <h2 className="text-xl font-bold mb-3">Ledger</h2>
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-      <div className="flex gap-2 mb-3">
+  return (
+    <div>
+      <h1>Ledger</h1>
+
+      {/* FILTERS */}
+      <div style={{ marginBottom: "20px" }}>
+        <select onChange={(e) => setFilter(e.target.value)}>
+          <option value="all">All</option>
+          <option value="month">Month</option>
+          <option value="year">Year</option>
+        </select>
+
         <input
-          placeholder="Batch ID"
+          placeholder="Ledger ID"
           value={batchId}
           onChange={(e) => setBatchId(e.target.value)}
-          className="p-2 border rounded w-full"
+          style={{ marginLeft: "10px" }}
         />
 
-        <button
-          onClick={fetchLedger}
-          className="bg-purple-500 text-white px-4 py-2 rounded"
-        >
-          Fetch
+        <button onClick={fetchData} style={{ marginLeft: "10px" }}>
+          Apply
         </button>
       </div>
 
-      {data && (
-        <div>
-          <p><b>Color:</b> {data.batch.color}</p>
-          <p><b>Meters:</b> {data.batch.meters}</p>
-          <p><b>Party:</b> {data.batch.party}</p>
+      {/* TABLE */}
+      <table border="1" width="100%">
+        <thead>
+          <tr>
+            <th>Batch ID</th>
+            <th>Color</th>
+            <th>Meters</th>
+          </tr>
+        </thead>
 
-          <h3 className="mt-4 font-bold">Transactions</h3>
-          <ul className="mt-2 space-y-1">
-            {data.transactions.map((txn) => (
-              <li key={txn.id} className="border p-2 rounded">
-                {txn.action} - {txn.meters} - {txn.date} - {txn.action_type}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        <tbody>
+          {data?.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td>{item.color}</td>
+              <td>{item.meters}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
