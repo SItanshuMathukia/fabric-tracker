@@ -11,13 +11,17 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await loginUser(form);
-      navigate("/");
-    } catch (err) {
-      alert(err.response?.data?.detail || "Login failed");
-    }
-  };
+            const res = await loginUser(form);
+
+            localStorage.setItem("user", JSON.stringify(res.data.user));
+
+            navigate("/");
+        } catch (err) {
+            alert(err.response?.data?.detail || "Login failed");
+        }
+    };
 
   return (
     <div className="p-6 max-w-md mx-auto">
