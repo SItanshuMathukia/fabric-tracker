@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
+import Header from "./components/Header";
 
 import Ledger from "./components/Ledger";
 import CreateBatch from "./components/CreateBatch";

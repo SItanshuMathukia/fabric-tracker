@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { addTransaction } from "../api/api";
+import Header from "./Header";
 
 export default function AddTransaction() {
   const [batchId, setBatchId] = useState("");
@@ -24,6 +25,9 @@ export default function AddTransaction() {
   };
 
   return (
+    <div>
+    <Header />
+
     <div className="p-4 bg-white rounded-2xl shadow-md">
       <h2 className="text-xl font-bold mb-3">Add Transaction</h2>
 
@@ -71,6 +75,7 @@ export default function AddTransaction() {
           Submit
         </button>
       </form>
+    </div>
     </div>
   );
 }

@@ -1,5 +1,7 @@
+import Header from "./Header";
 import { useState } from "react";
 import { createBatch } from "../api/api";
+
 
 export default function CreateBatch({ onCreated }) {
   const [form, setForm] = useState({
@@ -61,6 +63,8 @@ export default function CreateBatch({ onCreated }) {
   };
 
   return (
+    <div>
+    <Header />
     <div className="p-6 bg-white rounded-2xl shadow-lg border max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Create Batch</h2>
 
@@ -141,6 +145,7 @@ export default function CreateBatch({ onCreated }) {
           {loading ? "Creating..." : "Create Batch"}
         </button>
       </form>
+    </div>
     </div>
   );
 }

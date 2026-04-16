@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getLedger } from "../api/api";
+import Header from "./Header";
 
 export default function Ledger() {
   const [batchId, setBatchId] = useState("");
@@ -40,6 +41,9 @@ export default function Ledger() {
   };
 
   return (
+    <div>
+    <Header />
+
     <div className="p-6 bg-white rounded-2xl shadow-lg max-w-3xl mx-auto">
       
       <h2 className="text-2xl font-bold mb-4">Ledger</h2>
@@ -109,6 +113,7 @@ export default function Ledger() {
           )}
         </div>
       )}
+    </div>
     </div>
   );
 }
