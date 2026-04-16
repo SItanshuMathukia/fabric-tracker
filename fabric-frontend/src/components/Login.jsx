@@ -17,7 +17,7 @@ export default function Login() {
             const res = await loginUser(form);
 
             localStorage.setItem("user", JSON.stringify(res.data.user));
-
+            localStorage.setItem("token", res.data.access_token); 
             navigate("/");
         } catch (err) {
             alert(err.response?.data?.detail || "Login failed");
@@ -48,6 +48,13 @@ export default function Login() {
         <button onClick={handleSubmit} className="bg-blue-600 text-white p-2 mt-3 w-full">
           Login
         </button>
+
+        <p className="mt-4 text-center">
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Register here
+          </Link>
+        </p>
       </div>
     </div>
   );
