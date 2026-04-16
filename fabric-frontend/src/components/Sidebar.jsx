@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 
 export default function Sidebar() {
   const linkStyle = ({ isActive }) => ({
@@ -41,7 +41,7 @@ export default function Sidebar() {
           onClick={() => {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            window.location.href = "/login";
+            navigate = "/login";
           }}
           className="w-full text-left text-red-600 hover:text-red-800"
         >
