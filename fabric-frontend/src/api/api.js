@@ -19,7 +19,6 @@ export const registerUser = (data) => API.post("/register", data);
 export const loginUser = async (data) => {
   const res = await API.post("/login", data);
 
-  // store token
   localStorage.setItem("token", res.data.access_token);
 
   return res;
