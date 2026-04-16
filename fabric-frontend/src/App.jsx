@@ -14,9 +14,18 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/ledger" element={<Ledger />} />
-        <Route path="create-batch" element={<CreateBatch />} />
-        <Route path="add-transaction" element={<AddTransaction />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Ledger />} />
+          <Route path="create-batch" element={<CreateBatch />} />
+          <Route path="add-transaction" element={<AddTransaction />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
