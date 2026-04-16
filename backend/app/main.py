@@ -8,7 +8,7 @@ from app.core.database import engine, Base, get_db
 from app.models import FabricBatch, FabricTransaction
 from app.schemas import BatchCreate, TransactionCreate, UserCreate, UserLogin
 from app.core.security import create_access_token, verify_token
-from backend.app.models import User
+from app.models import User
 
 app = FastAPI()
 
