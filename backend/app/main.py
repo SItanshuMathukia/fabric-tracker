@@ -3,12 +3,10 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
-from passlib.hash import bcrypt
-from app.core.database import engine, Base, get_db
-from app.models import FabricBatch, FabricTransaction
+from app.core.security import hash_password, verify_password, create_access_tokenfrom app.core.database import engine, Base, get_db
+from app.models import FabricBatch, FabricTransaction, User
 from app.schemas import BatchCreate, TransactionCreate, UserCreate, UserLogin
 from app.core.security import create_access_token, verify_token
-from app.models import User
 
 app = FastAPI()
 
@@ -53,17 +51,15 @@ def root():
 @app.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
 
-    # ✅ check if user exists
     existing = db.query(User).filter(User.email == user.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    # ✅ create user
     new_user = User(
         id=str(uuid.uuid4()),
         name=user.name,
         email=user.email,
-        password=bcrypt.hash(user.password)
+        password=hash_password(user.password)
     )
 
     db.add(new_user)
@@ -71,7 +67,6 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     return {"message": "User created"}
-
 # -----------------------------
 # LogIn User
 # -----------------------------
@@ -79,12 +74,12 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 @app.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
 
-    db_user = db.query(user).filter(user.email == user.email).first()
+    db_user = db.query(User).filter(User.email == user.email).first()
 
     if not db_user:
         raise HTTPException(status_code=400, detail="User not found")
 
-    if not bcrypt.verify(user.password, db_user.password):
+    if not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=400, detail="Invalid password")
 
     token = create_access_token({
