@@ -5,12 +5,24 @@ import Header from "./components/Header";
 import Ledger from "./components/Ledger";
 import CreateBatch from "./components/CreateBatch";
 import AddTransaction from "./components/AddTransaction";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<DashboardLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          elements={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Ledger />} />
           <Route path="create-batch" element={<CreateBatch />} />
           <Route path="add-transaction" element={<AddTransaction />} />

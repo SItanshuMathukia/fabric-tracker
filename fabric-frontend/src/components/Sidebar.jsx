@@ -35,6 +35,19 @@ export default function Sidebar() {
       <NavLink to="/add-transaction" style={linkStyle}>
         🔁 Add Transaction
       </NavLink>
+
+      <div className="mt-auto p-4 border-t">
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+          }}
+          className="w-full text-left text-red-600 hover:text-red-800"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 }
