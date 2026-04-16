@@ -3,11 +3,15 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
-from app.core.security import hash_password, create_access_token
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    verify_token
+)
 from app.core.database import engine, Base, get_db
 from app.models import FabricBatch, FabricTransaction, User
 from app.schemas import BatchCreate, TransactionCreate, UserCreate, UserLogin
-from app.core.security import create_access_token
 
 app = FastAPI()
 
@@ -19,6 +23,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ✅ CREATE TABLES in PostgreSQL
+Base.metadata.create_all(bind=engine)
+
+# -----------------------------
+# AUTH HELPER
+# -----------------------------
 def get_current_user(authorization: str = Header(None)):
 
     if not authorization:
@@ -36,10 +46,9 @@ def get_current_user(authorization: str = Header(None)):
 
     return payload
 
-
-# ✅ CREATE TABLES in PostgreSQL
-Base.metadata.create_all(bind=engine)
-
+# -----------------------------
+# ROOT
+# -----------------------------
 
 @app.get("/")
 def root():
@@ -56,11 +65,13 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
 
+    safe_password = user.password[:72]
+
     new_user = User(
         id=str(uuid.uuid4()),
         name=user.name,
         email=user.email,
-        password=hash_password(user.password)
+        password=hash_password(safe_password)
     )
 
     db.add(new_user)
@@ -68,6 +79,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     return {"message": "User created"}
+
 # -----------------------------
 # LogIn User
 # -----------------------------
@@ -79,6 +91,9 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
 
     if not db_user:
         raise HTTPException(status_code=400, detail="User not found")
+
+    if not verify_password(user.password[:72], db_user.password):
+        raise HTTPException(status_code=400, detail="Invalid credentials")
 
     token = create_access_token({
         "user_id": db_user.id,

@@ -13,6 +13,12 @@ def hash_password(password: str):
 def verify_password(plain, hashed):
     return pwd_context.verify(plain, hashed)
 
+def verify_token(token: str):
+    try:
+        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except:
+        return None
+
 def create_access_token(data: dict):
     to_encode = data.copy()
     to_encode.update({"exp": datetime.utcnow() + timedelta(hours=10)})
