@@ -16,7 +16,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route
           path="/"
-          elements={
+          element={
             <ProtectedRoute>
               <DashboardLayout />
             </ProtectedRoute>
