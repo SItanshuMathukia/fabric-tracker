@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { loginUser } from "../api/api";
 import { useNavigate } from "react-router-dom";
+import Header from "./Header";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -24,27 +25,30 @@ export default function Login() {
     };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h2 className="text-xl font-bold">Login</h2>
+    <div>
+      <Header />
+      <div className="p-6 max-w-md mx-auto">
+        <h2 className="text-xl font-bold">Login</h2>
 
-      <input
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-        className="border p-2 w-full mt-2"
-      />
+        <input
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          className="border p-2 w-full mt-2"
+        />
 
-      <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        onChange={handleChange}
-        className="border p-2 w-full mt-2"
-      />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+          className="border p-2 w-full mt-2"
+        />
 
-      <button onClick={handleSubmit} className="bg-blue-600 text-white p-2 mt-3 w-full">
-        Login
-      </button>
+        <button onClick={handleSubmit} className="bg-blue-600 text-white p-2 mt-3 w-full">
+          Login
+        </button>
+      </div>
     </div>
   );
 }

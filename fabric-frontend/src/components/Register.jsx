@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { registerUser } from "../api/api";
 import { useNavigate } from "react-router-dom";
+import Header from "./Header";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -25,16 +26,20 @@ export default function Register() {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h2 className="text-xl font-bold">Register</h2>
+    <div>
+      <Header />
+      <div className="p-6 max-w-md mx-auto">
+        <h2 className="text-xl font-bold">Register</h2>
 
-      <input name="name" placeholder="Name" onChange={handleChange} className="border p-2 w-full mt-2" />
-      <input name="email" placeholder="Email" onChange={handleChange} className="border p-2 w-full mt-2" />
-      <input name="password" type="password" placeholder="Password" onChange={handleChange} className="border p-2 w-full mt-2" />
+        <input name="name" placeholder="Name" onChange={handleChange} className="border p-2 w-full mt-2" />
+        <input name="email" placeholder="Email" onChange={handleChange} className="border p-2 w-full mt-2" />
+        <input name="password" type="password" placeholder="Password" onChange={handleChange} className="border p-2 w-full mt-2" />
 
-      <button onClick={handleSubmit} className="bg-green-600 text-white p-2 mt-3 w-full">
-        Register
-      </button>
+        <button onClick={handleSubmit} className="bg-green-600 text-white p-2 mt-3 w-full">
+          Register
+        </button>
+      </div>
     </div>
+
   );
 }
