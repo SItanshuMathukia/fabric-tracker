@@ -9,7 +9,8 @@ if not DATABASE_URL:
 
 engine = create_engine(
     DATABASE_URL,
-    echo=True  # helps debug SQL queries
+    echo=True, # helps debug SQL queries
+    pool_pre_ping=True
 )
 
 SessionLocal = sessionmaker(

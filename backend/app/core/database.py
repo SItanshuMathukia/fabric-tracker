@@ -1,11 +1,16 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 
-DATABASE_URL = "postgresql://postgres:root@localhost:5432/fabric_db"
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is not set")
 
 engine = create_engine(
     DATABASE_URL,
-    echo=True
+    echo=True, # helps debug SQL queries
+    pool_pre_ping=True
 )
 
 SessionLocal = sessionmaker(
