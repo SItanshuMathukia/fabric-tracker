@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
-from app.core.security import hash_password, verify_password, create_access_token
+from app.core.security import hash_password, create_access_token
 from app.core.database import engine, Base, get_db
 from app.models import FabricBatch, FabricTransaction, User
 from app.schemas import BatchCreate, TransactionCreate, UserCreate, UserLogin
@@ -79,9 +79,6 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
 
     if not db_user:
         raise HTTPException(status_code=400, detail="User not found")
-
-    if not verify_password(user.password, db_user.password):
-        raise HTTPException(status_code=400, detail="Invalid password")
 
     token = create_access_token({
         "user_id": db_user.id,
