@@ -5,9 +5,10 @@ import uuid
 
 from passlib.hash import bcrypt
 from app.core.database import engine, Base, get_db
-from app.models import FabricBatch, FabricTransaction, user
+from app.models import FabricBatch, FabricTransaction
 from app.schemas import BatchCreate, TransactionCreate, UserCreate, UserLogin
 from app.core.security import create_access_token, verify_token
+from backend.app.models import User
 
 app = FastAPI()
 
@@ -52,11 +53,13 @@ def root():
 @app.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
 
-    existing = db.query(user).filter(user.email == user.email).first()
+    # ✅ check if user exists
+    existing = db.query(User).filter(User.email == user.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    new_user = user(
+    # ✅ create user
+    new_user = User(
         id=str(uuid.uuid4()),
         name=user.name,
         email=user.email,
