@@ -1,11 +1,13 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
+from passlib.hash import bcrypt
 from app.core.database import engine, Base, get_db
-from app.models import FabricBatch, FabricTransaction
-from app.schemas import BatchCreate, TransactionCreate
+from app.models import FabricBatch, FabricTransaction, user
+from app.schemas import BatchCreate, TransactionCreate, UserCreate, UserLogin
+from app.core.security import create_access_token, verify_token
 
 app = FastAPI()
 
@@ -17,6 +19,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def get_current_user(authorization: str = Header(None)):
+
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Token missing")
+
+    try:
+        token = authorization.split(" ")[1]
+    except:
+        raise HTTPException(status_code=401, detail="Invalid token format")
+
+    payload = verify_token(token)
+
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    return payload
+
 
 # ✅ CREATE TABLES in PostgreSQL
 Base.metadata.create_all(bind=engine)
@@ -26,12 +45,65 @@ Base.metadata.create_all(bind=engine)
 def root():
     return {"message": "Fabric Tracker API Running"}
 
+# -----------------------------
+# Register User
+# -----------------------------
+
+@app.post("/register")
+def register(user: UserCreate, db: Session = Depends(get_db)):
+
+    existing = db.query(user).filter(user.email == user.email).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="User already exists")
+
+    new_user = user(
+        id=str(uuid.uuid4()),
+        name=user.name,
+        email=user.email,
+        password=bcrypt.hash(user.password)
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return {"message": "User created"}
+
+# -----------------------------
+# LogIn User
+# -----------------------------
+
+@app.post("/login")
+def login(user: UserLogin, db: Session = Depends(get_db)):
+
+    db_user = db.query(user).filter(user.email == user.email).first()
+
+    if not db_user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    if not bcrypt.verify(user.password, db_user.password):
+        raise HTTPException(status_code=400, detail="Invalid password")
+
+    token = create_access_token({
+        "user_id": db_user.id,
+        "email": db_user.email
+    })
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "id": db_user.id,
+            "name": db_user.name,
+            "email": db_user.email
+        }
+    }
 
 # -----------------------------
 # Create Batch
 # -----------------------------
 @app.post("/batches")
-def create_batch(batch: BatchCreate, db: Session = Depends(get_db)):
+def create_batch(batch: BatchCreate, db: Session = Depends(get_db),  user=Depends(get_current_user)):
     new_batch = FabricBatch(
         id=batch.id,
         color=batch.color,
@@ -65,7 +137,7 @@ def create_batch(batch: BatchCreate, db: Session = Depends(get_db)):
 # Add Transaction
 # -----------------------------
 @app.post("/transactions")
-def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
+def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db),  user=Depends(get_current_user)):
     batch = db.query(FabricBatch).filter(FabricBatch.id == txn.batch_id).first()
 
     if not batch:
@@ -101,7 +173,7 @@ def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db)):
 # Get Ledger
 # -----------------------------
 @app.get("/ledger/{batch_id}")
-def get_ledger(batch_id: str, db: Session = Depends(get_db)):
+def get_ledger(batch_id: str, db: Session = Depends(get_db),  user=Depends(get_current_user)):
     batch = db.query(FabricBatch).filter(FabricBatch.id == batch_id).first()
 
     if not batch:
