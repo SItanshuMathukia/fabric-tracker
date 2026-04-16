@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
 from app.core.database import engine, Base, get_db
-from app.models.fabric_batch import FabricBatch
-from app.models.fabric_transaction import FabricTransaction
+from app.models import FabricBatch, FabricTransaction
+from app.schemas import BatchCreate, TransactionCreate
 
 app = FastAPI()
 
