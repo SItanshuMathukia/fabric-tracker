@@ -2,8 +2,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os 
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-# ⚠️ use same password you used in docker (you said root earlier)
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is not set")
 
 engine = create_engine(
     DATABASE_URL,
