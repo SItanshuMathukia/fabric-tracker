@@ -14,9 +14,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-export const createBatch = (data) => API.post("/batches", data);
-export const addTransaction = (data) => API.post("/transactions", data);
-export const getLedger = (batchId) => API.get(`/ledger/${batchId}`);
+
 export const registerUser = (data) => API.post("/register", data);
 export const loginUser = async (data) => {
   const res = await API.post("/login", data);
@@ -26,3 +24,7 @@ export const loginUser = async (data) => {
 
   return res;
 };
+
+export const createBatch = (data) => API.post("/batches", data);
+export const addTransaction = (data) => API.post("/transactions", data);
+export const getLedger = (batchId) => API.get(`/ledger/${batchId}`);

@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
-import Header from "./components/Header";
 
 import Ledger from "./components/Ledger";
 import CreateBatch from "./components/CreateBatch";
@@ -17,7 +16,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route
           path="/"
-          elements={
+          element={
             <ProtectedRoute>
               <DashboardLayout />
             </ProtectedRoute>

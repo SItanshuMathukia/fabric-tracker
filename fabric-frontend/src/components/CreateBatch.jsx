@@ -1,8 +1,6 @@
 import Header from "./Header";
 import { useState } from "react";
 import { createBatch } from "../api/api";
-import Header from "./Header";
-
 
 export default function CreateBatch({ onCreated }) {
   const [form, setForm] = useState({
