@@ -1,29 +1,53 @@
 import Sidebar from "../components/Sidebar";
-import { Outlet , Link} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function DashboardLayout() {
+  const linkStyle = ({ isActive }) => ({
+    padding: "12px 15px",
+    margin: "8px 0",
+    display: "block",
+    borderRadius: "8px",
+    textDecoration: "none",
+    color: isActive ? "white" : "#333",
+    background: isActive ? "#4f46e5" : "transparent",
+    fontWeight: "500",
+  });
+
   return (
-    <div style={{ display: "flex" }}>
-      {/* Sidebar */}
-      <Sidebar />
+    <div
+      style={{
+        width: "240px",
+        height: "100vh",
+        background: "#ffffff",
+        borderRight: "1px solid #e5e7eb",
+        padding: "20px",
+      }}
+    >
+      <h2 style={{ marginBottom: "20px" }}>Fabric Tracker</h2>
 
-      <div style={{ width: "200px", background: "#eee", padding: "10px" }}>
-        <h3>Menu</h3>
-        <Link to="/ledger">Ledger</Link><br />
-        <Link to="/create-batch">Create Batch</Link><br />
-        <Link to="/add-transaction">Add Transaction</Link>
-      </div>
+      <NavLink to="/" style={linkStyle}>
+        📊 Ledger
+      </NavLink>
 
-      {/* Main Content */}
-      <div
-        style={{
-          flex: 1,
-          padding: "20px",
-          background: "#f6f7fb",
-          minHeight: "100vh",
-        }}
-      >
-        <Outlet />
+      <NavLink to="/create-batch" style={linkStyle}>
+        ➕ Create Batch
+      </NavLink>
+
+      <NavLink to="/add-transaction" style={linkStyle}>
+        🔁 Add Transaction
+      </NavLink>
+
+      <div className="mt-auto p-4 border-t">
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+          }}
+          className="w-full text-left text-red-600 hover:text-red-800"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
