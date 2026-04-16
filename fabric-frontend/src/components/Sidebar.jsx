@@ -41,7 +41,7 @@ export default function Sidebar() {
           onClick={() => {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            navigate = "/login";
+            Navigate = "/login";
           }}
           className="w-full text-left text-red-600 hover:text-red-800"
         >
