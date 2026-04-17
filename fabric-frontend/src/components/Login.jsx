@@ -10,6 +10,10 @@ export default function Login() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  function goToRegister() {
+    navigate('/register');
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -44,7 +48,7 @@ export default function Login() {
           onChange={handleChange}
           className="border p-2 w-full mt-2"
         />
-        <a href="/register" className="mt-2 no-underline">Create an account ?</a>
+        <a onClick={goToRegister} className="mt-2 no-underline">Create an account ?</a>
 
         <button onClick={handleSubmit} className="bg-blue-600 text-white p-2 mt-3 w-full">
           Login
