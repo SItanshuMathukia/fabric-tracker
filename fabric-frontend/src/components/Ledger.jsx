@@ -44,7 +44,7 @@ export default function Ledger() {
     <div>
     <Header />
 
-    <div className="p-6 bg-white rounded-2xl shadow-lg max-w-3xl mx-auto">
+    <div className="p-6 bg-white rounded-2xl shadow-lg mx-auto">
       
       <h2 className="text-2xl font-bold mb-4">Ledger</h2>
 

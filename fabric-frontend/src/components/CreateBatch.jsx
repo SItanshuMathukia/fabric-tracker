@@ -64,7 +64,7 @@ export default function CreateBatch({ onCreated }) {
   return (
     <div>
     <Header />
-    <div className="p-6 bg-white rounded-2xl shadow-lg border max-w-2xl mx-auto">
+    <div className="p-6 bg-white rounded-2xl shadow-lg border mx-auto">
       <h2 className="text-2xl font-bold mb-4">Create Batch</h2>
 
       {error && (
