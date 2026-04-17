@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function Sidebar() {
   const linkStyle = ({ isActive }) => ({
@@ -11,6 +11,13 @@ export default function Sidebar() {
     background: isActive ? "#4f46e5" : "transparent",
     fontWeight: "500",
   });
+
+  const navigate = useNavigate()
+
+  function logout() {
+    localStorage.clear();
+    navigate('/login')
+  }
 
   return (
     <div
@@ -38,11 +45,7 @@ export default function Sidebar() {
 
       <div className="mt-auto p-4 border-t">
         <button
-          onClick={() => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "/login";
-          }}
+          onClick={logout}
           className="w-full text-left text-red-600 hover:text-red-800"
         >
           Logout
