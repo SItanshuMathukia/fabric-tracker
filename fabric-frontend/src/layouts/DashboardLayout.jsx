@@ -7,13 +7,6 @@ export default function DashboardLayout() {
       {/* Sidebar */}
       <Sidebar />
 
-      <div style={{ width: "200px", background: "#eee", padding: "10px" }}>
-        <h3>Menu</h3>
-        <Link to="/ledger">Ledger</Link><br />
-        <Link to="/create-batch">Create Batch</Link><br />
-        <Link to="/add-transaction">Add Transaction</Link>
-      </div>
-
       {/* Main Content */}
       <div
         style={{
