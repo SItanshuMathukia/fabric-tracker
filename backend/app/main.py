@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes.dashboard import router as dashboard_router
 import uuid
 
 from app.core.security import (
@@ -14,6 +15,8 @@ from app.models import FabricBatch, FabricTransaction, User
 from app.schemas import BatchCreate, TransactionCreate, UserCreate, UserLogin
 
 app = FastAPI()
+
+app.include_router(dashboard_router)
 
 app.add_middleware(
     CORSMiddleware,
