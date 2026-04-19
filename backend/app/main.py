@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException, Header, APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from datetime import datetime, timedelta
+from collections import defaultdict
 from app.database import get_db
 from app import models
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,25 +23,88 @@ dashboard_router = APIRouter()
 
 @dashboard_router.get("/dashboard")
 def get_dashboard(db: Session = Depends(get_db)):
-
     total_batches = db.query(models.FabricBatch).count()
-
     total_transactions = db.query(models.FabricTransaction).count()
 
     total_meters = db.query(
         func.coalesce(func.sum(models.FabricTransaction.meters), 0)
     ).scalar()
 
-    recent_transactions = db.query(models.FabricTransaction)\
-        .order_by(models.FabricTransaction.date.desc())\
-        .limit(5)\
+    recent_transactions_query = (
+        db.query(models.FabricTransaction)
+        .order_by(models.FabricTransaction.date.desc())
+        .limit(5)
         .all()
+    )
+
+    recent_activity = [
+        {
+            "id": txn.id,
+            "action": txn.action,
+            "meters": txn.meters,
+            "date": str(txn.date),
+            "batch_id": txn.batch_id,
+        }
+        for txn in recent_transactions_query
+    ]
+
+    # Weekly analytics (last 7 days)
+    today = datetime.utcnow().date()
+    start_date = today - timedelta(days=6)
+
+    weekly_transactions = (
+        db.query(models.FabricTransaction)
+        .filter(models.FabricTransaction.date >= start_date)
+        .all()
+    )
+
+    weekly_map = defaultdict(float)
+    for txn in weekly_transactions:
+        txn_date = txn.date if hasattr(txn.date, "isoformat") else txn.date
+        key = str(txn_date)
+        if txn.action == "remove":
+            weekly_map[key] -= float(txn.meters or 0)
+        else:
+            weekly_map[key] += float(txn.meters or 0)
+
+    weekly_analytics = []
+    for i in range(7):
+        day = start_date + timedelta(days=i)
+        day_str = str(day)
+        weekly_analytics.append({
+            "date": day_str,
+            "meters": weekly_map.get(day_str, 0)
+        })
+
+    # Top parties
+    top_parties_query = (
+        db.query(
+            models.FabricBatch.party,
+            func.count(models.FabricBatch.id).label("batch_count"),
+            func.coalesce(func.sum(models.FabricBatch.meters), 0).label("total_meters")
+        )
+        .group_by(models.FabricBatch.party)
+        .order_by(func.count(models.FabricBatch.id).desc())
+        .limit(5)
+        .all()
+    )
+
+    top_parties = [
+        {
+            "party": row.party,
+            "batch_count": row.batch_count,
+            "total_meters": float(row.total_meters or 0),
+        }
+        for row in top_parties_query
+    ]
 
     return {
         "total_batches": total_batches,
         "total_transactions": total_transactions,
         "total_meters": total_meters,
-        "recent_activity": recent_transactions
+        "recent_activity": recent_activity,
+        "weekly_analytics": weekly_analytics,
+        "top_parties": top_parties,
     }
 
 app = FastAPI()
