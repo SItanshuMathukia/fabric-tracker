@@ -61,80 +61,29 @@ export default function CreateBatch({ onCreated = () => {} }) {
   };
 
   return (
-    <section className="rounded-3xl border bg-white p-4 shadow-lg sm:p-6">
-      <h2 className="mb-4 text-3xl font-bold text-gray-900">Create Batch</h2>
+    <section className="rounded-3xl border bg-white p-4 shadow-lg sm:p-6 dark:border-gray-800 dark:bg-gray-900">
+      <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">Create Batch</h2>
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-100 p-3 text-sm text-red-700">
+        <div className="mb-4 rounded-xl bg-red-100 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <input
-          name="id"
-          placeholder="Batch ID"
-          value={form.id}
-          onChange={handleChange}
-          className="rounded-xl border border-gray-300 p-3"
-        />
-
-        <input
-          name="color"
-          placeholder="Color"
-          value={form.color}
-          onChange={handleChange}
-          className="rounded-xl border border-gray-300 p-3"
-        />
-
-        <input
-          name="party"
-          placeholder="Party"
-          value={form.party}
-          onChange={handleChange}
-          className="rounded-xl border border-gray-300 p-3"
-        />
-
-        <input
-          name="date"
-          type="date"
-          value={form.date}
-          onChange={handleChange}
-          className="rounded-xl border border-gray-300 p-3"
-        />
-
-        <input
-          name="rate"
-          type="number"
-          placeholder="Rate"
-          value={form.rate}
-          onChange={handleChange}
-          className="rounded-xl border border-gray-300 p-3"
-        />
-
-        <input
-          name="meters"
-          type="number"
-          placeholder="Meters"
-          value={form.meters}
-          onChange={handleChange}
-          className="rounded-xl border border-gray-300 p-3"
-        />
-
-        <input
-          name="price"
-          type="number"
-          placeholder="Price"
-          value={form.price}
-          onChange={handleChange}
-          className="rounded-xl border border-gray-300 p-3 md:col-span-2"
-        />
+        <input name="id" placeholder="Batch ID" value={form.id} onChange={handleChange} className="rounded-xl border border-gray-300 p-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
+        <input name="color" placeholder="Color" value={form.color} onChange={handleChange} className="rounded-xl border border-gray-300 p-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
+        <input name="party" placeholder="Party" value={form.party} onChange={handleChange} className="rounded-xl border border-gray-300 p-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
+        <input name="date" type="date" value={form.date} onChange={handleChange} className="rounded-xl border border-gray-300 p-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
+        <input name="rate" type="number" placeholder="Rate" value={form.rate} onChange={handleChange} className="rounded-xl border border-gray-300 p-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
+        <input name="meters" type="number" placeholder="Meters" value={form.meters} onChange={handleChange} className="rounded-xl border border-gray-300 p-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
+        <input name="price" type="number" placeholder="Price" value={form.price} onChange={handleChange} className="rounded-xl border border-gray-300 p-3 md:col-span-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
 
         <button
           type="submit"
           disabled={loading}
           className={`rounded-xl py-3 font-medium text-white transition md:col-span-2 ${
-            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
           }`}
         >
           {loading ? "Creating..." : "Create Batch"}

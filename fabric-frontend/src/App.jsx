@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
 
+import Dashboard from "./components/Dashboard";
 import Ledger from "./components/Ledger";
 import CreateBatch from "./components/CreateBatch";
 import AddTransaction from "./components/AddTransaction";
@@ -22,6 +23,7 @@ export default function App() {
             </ProtectedRoute>
           }
         >
+          <Route index element={<Dashboard />} />
           <Route index element={<Ledger />} />
           <Route path="create-batch" element={<CreateBatch />} />
           <Route path="add-transaction" element={<AddTransaction />} />
