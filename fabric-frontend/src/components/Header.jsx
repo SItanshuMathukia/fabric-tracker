@@ -1,7 +1,6 @@
 export default function Header({ onMenuClick, darkMode, setDarkMode }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/90 backdrop-blur dark:border-gray-800 dark:bg-[#0f172a]/90">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+        <header className="sticky top-0 z-30 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md">      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
         <button
           type="button"
           onClick={onMenuClick}
@@ -10,7 +9,7 @@ export default function Header({ onMenuClick, darkMode, setDarkMode }) {
           ☰
         </button>
 
-        <div className="flex-1 text-center md:text-left">
+        <div className="flex-1 flex justify-center">
           <h1 className="text-lg font-bold tracking-wide sm:text-xl">
             Shruti Apparels
           </h1>
