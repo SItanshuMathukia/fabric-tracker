@@ -1,24 +1,24 @@
+import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { Outlet , Link} from "react-router-dom";
+import Header from "../components/Header";
 
 export default function DashboardLayout() {
-  return (
-    <div style={{ display: "flex" }}>
-      {/* Sidebar */}
-      <Sidebar />
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-      {/* Main Content */}
-      <div
-        style={{
-          flex: 1,
-          padding: "20px",
-          background: "#f6f7fb",
-          minHeight: "100vh",
-        }}
-      >
-        <Outlet />
+  return (
+    <div className="min-h-screen bg-[#f6f7fb]">
+      <Header onMenuClick={() => setSidebarOpen(true)} />
+
+      <div className="flex">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto w-full max-w-6xl">
+            <Outlet />
+          </div>
+        </main>
       </div>
     </div>
   );
 }
-

@@ -1,8 +1,7 @@
-import Header from "./Header";
 import { useState } from "react";
 import { createBatch } from "../api/api";
 
-export default function CreateBatch({ onCreated }) {
+export default function CreateBatch({ onCreated = () => {} }) {
   const [form, setForm] = useState({
     id: "",
     color: "",
@@ -62,25 +61,22 @@ export default function CreateBatch({ onCreated }) {
   };
 
   return (
-    <div>
-    <Header />
-    <div className="p-6 bg-white rounded-2xl shadow-lg border mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Create Batch</h2>
+    <section className="rounded-3xl border bg-white p-4 shadow-lg sm:p-6">
+      <h2 className="mb-4 text-3xl font-bold text-gray-900">Create Batch</h2>
 
       {error && (
-        <div className="mb-3 p-2 text-sm bg-red-100 text-red-700 rounded">
+        <div className="mb-4 rounded-xl bg-red-100 p-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <input
           name="id"
           placeholder="Batch ID"
           value={form.id}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className="rounded-xl border border-gray-300 p-3"
         />
 
         <input
@@ -88,7 +84,7 @@ export default function CreateBatch({ onCreated }) {
           placeholder="Color"
           value={form.color}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className="rounded-xl border border-gray-300 p-3"
         />
 
         <input
@@ -96,7 +92,7 @@ export default function CreateBatch({ onCreated }) {
           placeholder="Party"
           value={form.party}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className="rounded-xl border border-gray-300 p-3"
         />
 
         <input
@@ -104,7 +100,7 @@ export default function CreateBatch({ onCreated }) {
           type="date"
           value={form.date}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className="rounded-xl border border-gray-300 p-3"
         />
 
         <input
@@ -113,7 +109,7 @@ export default function CreateBatch({ onCreated }) {
           placeholder="Rate"
           value={form.rate}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className="rounded-xl border border-gray-300 p-3"
         />
 
         <input
@@ -122,7 +118,7 @@ export default function CreateBatch({ onCreated }) {
           placeholder="Meters"
           value={form.meters}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className="rounded-xl border border-gray-300 p-3"
         />
 
         <input
@@ -131,20 +127,19 @@ export default function CreateBatch({ onCreated }) {
           placeholder="Price"
           value={form.price}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className="rounded-xl border border-gray-300 p-3 md:col-span-2"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className={`md:col-span-2 py-2 rounded text-white transition ${
+          className={`rounded-xl py-3 font-medium text-white transition md:col-span-2 ${
             loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
           {loading ? "Creating..." : "Create Batch"}
         </button>
       </form>
-    </div>
-    </div>
+    </section>
   );
 }

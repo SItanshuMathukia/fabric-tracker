@@ -1,56 +1,77 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
-export default function Sidebar() {
-  const linkStyle = ({ isActive }) => ({
-    padding: "12px 15px",
-    margin: "8px 0",
-    display: "block",
-    borderRadius: "8px",
-    textDecoration: "none",
-    color: isActive ? "white" : "#333",
-    background: isActive ? "#4f46e5" : "transparent",
-    fontWeight: "500",
-  });
-
-  const navigate = useNavigate()
+export default function Sidebar({ isOpen, onClose }) {
+  const navigate = useNavigate();
 
   function logout() {
     localStorage.clear();
-    navigate('/login')
+    navigate("/login");
+    onClose?.();
   }
 
+  const navItemClass = ({ isActive }) =>
+    `block rounded-xl px-4 py-3 text-base font-medium transition ${
+      isActive
+        ? "bg-indigo-600 text-white shadow"
+        : "text-gray-700 hover:bg-gray-100"
+    }`;
+
   return (
-    <div
-      style={{
-        width: "240px",
-        height: "100vh",
-        background: "#ffffff",
-        borderRight: "1px solid #e5e7eb",
-        padding: "20px",
-      }}
-    >
-      <h2 style={{ marginBottom: "20px" }}>Fabric Tracker</h2>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          onClick={onClose}
+        />
+      )}
 
-      <NavLink to="/" style={linkStyle}>
-        📊 Ledger
-      </NavLink>
+      {/* Sidebar */}
+      <aside
+        className={`
+          fixed inset-y-0 left-0 z-50 w-72 transform bg-white p-5 shadow-xl transition-transform duration-300
+          md:static md:z-0 md:block md:w-64 md:translate-x-0 md:border-r md:border-gray-200 md:shadow-none
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        <div className="mb-6 flex items-center justify-between md:block">
+          <h2 className="text-2xl font-semibold text-gray-900">Fabric Tracker</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md px-2 py-1 text-lg md:hidden"
+          >
+            ✕
+          </button>
+        </div>
 
-      <NavLink to="/create-batch" style={linkStyle}>
-        ➕ Create Batch
-      </NavLink>
+        <nav className="space-y-2">
+          <NavLink to="/" end className={navItemClass} onClick={onClose}>
+            📊 Ledger
+          </NavLink>
 
-      <NavLink to="/add-transaction" style={linkStyle}>
-        🔁 Add Transaction
-      </NavLink>
+          <NavLink to="/create-batch" className={navItemClass} onClick={onClose}>
+            ➕ Create Batch
+          </NavLink>
 
-      <div className="mt-auto p-4 border-t">
-        <button
-          onClick={logout}
-          className="w-full text-left text-red-600 hover:text-red-800"
-        >
-          Logout
-        </button>
-      </div>
-    </div>
+          <NavLink
+            to="/add-transaction"
+            className={navItemClass}
+            onClick={onClose}
+          >
+            🔁 Add Transaction
+          </NavLink>
+        </nav>
+
+        <div className="mt-8 border-t pt-4">
+          <button
+            onClick={logout}
+            className="w-full rounded-xl border border-red-200 px-4 py-3 text-left font-medium text-red-600 transition hover:bg-red-50"
+          >
+            Logout
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }

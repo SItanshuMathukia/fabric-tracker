@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { addTransaction } from "../api/api";
-import Header from "./Header";
 
 export default function AddTransaction() {
   const [batchId, setBatchId] = useState("");
@@ -8,7 +7,6 @@ export default function AddTransaction() {
   const [action, setAction] = useState("add");
   const [action_type, setAction_Type] = useState("");
   const [date, setDate] = useState("");
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,24 +23,21 @@ export default function AddTransaction() {
   };
 
   return (
-    <div>
-    <Header />
+    <section className="rounded-3xl bg-white p-4 shadow-lg sm:p-6">
+      <h2 className="mb-4 text-3xl font-bold text-gray-900">Add Transaction</h2>
 
-    <div className="p-4 bg-white rounded-2xl shadow-md">
-      <h2 className="text-xl font-bold mb-3">Add Transaction</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           placeholder="Batch ID"
           value={batchId}
           onChange={(e) => setBatchId(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full rounded-xl border border-gray-300 p-3"
         />
 
         <select
           value={action}
           onChange={(e) => setAction(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full rounded-xl border border-gray-300 p-3"
         >
           <option value="add">Add</option>
           <option value="remove">Remove</option>
@@ -52,15 +47,15 @@ export default function AddTransaction() {
           placeholder="Action Type"
           value={action_type}
           onChange={(e) => setAction_Type(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full rounded-xl border border-gray-300 p-3"
         />
 
-         <input
+        <input
           placeholder="Date"
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full rounded-xl border border-gray-300 p-3"
         />
 
         <input
@@ -68,14 +63,13 @@ export default function AddTransaction() {
           type="number"
           value={meters}
           onChange={(e) => setMeters(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full rounded-xl border border-gray-300 p-3"
         />
 
-        <button className="bg-green-500 text-white px-4 py-2 rounded">
+        <button className="w-full rounded-xl bg-green-500 px-4 py-3 font-medium text-white hover:bg-green-600">
           Submit
         </button>
       </form>
-    </div>
-    </div>
+    </section>
   );
 }
