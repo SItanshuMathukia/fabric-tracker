@@ -21,18 +21,19 @@ export default function DashboardLayout() {
     }
   }, [darkMode]);
 
-
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-gray-900 dark:bg-[#0b1020] dark:text-white">
-      <Header onMenuClick={() => setSidebarOpen(true)} 
+      <Header
+        onMenuClick={() => setSidebarOpen(true)}
         darkMode={darkMode}
-        setDarkMode={setDarkMode} />
+        setDarkMode={setDarkMode}
+      />
 
       <div className="flex">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto w-full max-w-6xl animate-fadeIn">
+        <main className="flex-1 p-4 pb-24 sm:p-6 lg:p-8 md:pb-8">
+          <div className="mx-auto w-full max-w-7xl animate-fadeIn">
             <Outlet />
           </div>
         </main>

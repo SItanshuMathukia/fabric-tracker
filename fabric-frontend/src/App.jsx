@@ -15,6 +15,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
         <Route
           path="/"
           element={
@@ -24,7 +25,7 @@ export default function App() {
           }
         >
           <Route index element={<Dashboard />} />
-          <Route index element={<Ledger />} />
+          <Route path="ledger" element={<Ledger />} />
           <Route path="create-batch" element={<CreateBatch />} />
           <Route path="add-transaction" element={<AddTransaction />} />
         </Route>
