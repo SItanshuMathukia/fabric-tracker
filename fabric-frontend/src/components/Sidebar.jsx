@@ -4,8 +4,8 @@ export default function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
 
   function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     navigate("/login");
     onClose?.();
   }

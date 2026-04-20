@@ -21,8 +21,8 @@ export default function Login() {
       setLoading(true);
       const res = await loginUser(form);
 
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("token", res.data.access_token);
+      sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      sessionStorage.setItem("token", res.data.access_token);
       navigate("/");
     } catch (err) {
       alert(err.response?.data?.detail || "Login failed");

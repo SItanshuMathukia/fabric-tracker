@@ -6,7 +6,7 @@ import Header from "../components/Header";
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"
+    sessionStorage.getItem("theme") === "dark"
   );
 
   useEffect(() => {
@@ -14,10 +14,10 @@ export default function DashboardLayout() {
 
     if (darkMode) {
       root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      sessionStorage.setItem("theme", "dark");
     } else {
       root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      sessionStorage.setItem("theme", "light");
     }
   }, [darkMode]);
 
