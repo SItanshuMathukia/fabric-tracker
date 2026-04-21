@@ -13,9 +13,16 @@ import {
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
 
   useEffect(() => {
     fetchDashboard();
+
+    const user = sessionStorage.getItem("user") || localStorage.getItem("user");
+    if (user) {
+      setLoggedInUser(JSON.parse(user));
+    }
   }, []);
 
   const fetchDashboard = async () => {
@@ -42,6 +49,14 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
+
+
+      <div className="rounded-2xl bg-white p-4 shadow dark:bg-gray-900">
+        <p className="text-sm text-gray-500 dark:text-gray-400">Welcome </p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {loggedInUser?.name || "User"}
+        </h2>
+      </div>
 
       {/* STATS */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
