@@ -7,7 +7,6 @@ export default function Ledger() {
   const [loading, setLoading] = useState(false);
   const [showTransactions, setShowTransactions] = useState(false);
 
-
   const fetchLedger = async (e) => {
     if (e) e.preventDefault();
 
@@ -20,6 +19,7 @@ export default function Ledger() {
       setLoading(true);
       const res = await getLedger(batchId.trim());
       setData(res.data);
+      setShowTransactions(false);
     } catch (error) {
       console.error(error);
       alert(
@@ -27,6 +27,7 @@ export default function Ledger() {
           "Failed to fetch ledger. Please check Batch ID."
       );
       setData(null);
+      setShowTransactions(false);
     } finally {
       setLoading(false);
     }
@@ -35,6 +36,7 @@ export default function Ledger() {
   const handleReset = () => {
     setBatchId("");
     setData(null);
+    setShowTransactions(false);
   };
 
   return (
@@ -80,39 +82,52 @@ export default function Ledger() {
 
       {data && !loading && (
         <div className="space-y-5 rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Color</p>
-              <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+          {/* Batch summary in one row */}
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Color</p>
+              <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
                 {data.batch?.color}
               </p>
             </div>
-            <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Meters</p>
-              <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+
+            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Meters</p>
+              <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
                 {data.batch?.meters}
               </p>
             </div>
-            <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Party</p>
-              <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+
+            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Party</p>
+              <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
                 {data.batch?.party}
               </p>
             </div>
 
-            <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Rate</p>
-              <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Rate</p>
+              <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-white">
                 {data.batch?.rate ?? "N/A"}
               </p>
             </div>
           </div>
 
+          {/* Transactions header + button */}
           <div>
-            <h3 className="mb-3 text-xl font-bold text-gray-900 dark:text-white">
-              Transactions
-            </h3>
+            <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                Transactions
+              </h3>
 
+              <button
+                type="button"
+                onClick={() => setShowTransactions((prev) => !prev)}
+                className="inline-flex w-full justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 sm:w-auto"
+              >
+                {showTransactions ? "Hide Transactions" : "Show Transactions"}
+              </button>
+            </div>
 
             {showTransactions ? (
               data.transactions?.length > 0 ? (
@@ -122,7 +137,7 @@ export default function Ledger() {
                       key={txn.id}
                       className="rounded-2xl border border-gray-200 bg-gray-50 p-4 transition hover:shadow-sm dark:border-gray-800 dark:bg-gray-800"
                     >
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
                         <div>
                           <p className="text-sm text-gray-500 dark:text-gray-400">Action</p>
                           <p className="font-medium text-gray-900 dark:text-white">{txn.action}</p>
@@ -144,6 +159,13 @@ export default function Ledger() {
                             {txn.action_type || "-"}
                           </p>
                         </div>
+
+                        {txn.rate !== null && txn.rate !== undefined && (
+                          <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Rate</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{txn.rate}</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
