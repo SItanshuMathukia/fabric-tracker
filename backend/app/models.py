@@ -29,6 +29,7 @@ class FabricTransaction(Base):
     action_type = Column(String)
     meters = Column(Float)
     date = Column(Date)
+    rate = Column(Integer, nullable=True)  
 
     batch = relationship("FabricBatch", back_populates="transactions")
 

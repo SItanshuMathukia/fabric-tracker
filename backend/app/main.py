@@ -244,7 +244,7 @@ def create_batch(batch: BatchCreate, db: Session = Depends(get_db),  user=Depend
 # Add Transaction
 # -----------------------------
 @app.post("/transactions")
-def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db),  user=Depends(get_current_user)):
+def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
     batch = db.query(FabricBatch).filter(FabricBatch.id == txn.batch_id).first()
 
     if not batch:
@@ -256,22 +256,32 @@ def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db),  user
     if txn.action == "remove" and batch.meters < txn.meters:
         raise HTTPException(status_code=400, detail="Not enough fabric")
 
-    # update batch
     if txn.action == "add":
         batch.meters += txn.meters
+
+        # if rate is sent during add, update batch rate and price
+        if txn.rate is not None:
+            batch.rate = txn.rate
+
     else:
         batch.meters -= txn.meters
+
+    # keep price in sync
+    if batch.rate is not None and batch.meters is not None:
+        batch.price = batch.rate * batch.meters
 
     new_txn = FabricTransaction(
         batch_id=txn.batch_id,
         action=txn.action,
         action_type=txn.action_type,
         meters=txn.meters,
-        date=txn.date
+        date=txn.date,
+        rate=txn.rate if txn.action == "add" else None
     )
 
     db.add(new_txn)
     db.commit()
+    db.refresh(new_txn)
 
     return {"message": "Transaction successful"}
 
@@ -280,13 +290,31 @@ def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db),  user
 # Get Ledger
 # -----------------------------
 @app.get("/ledger/{batch_id}")
-def get_ledger(batch_id: str, db: Session = Depends(get_db),  user=Depends(get_current_user)):
+def get_ledger(batch_id: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
     batch = db.query(FabricBatch).filter(FabricBatch.id == batch_id).first()
 
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
 
     return {
-        "batch": batch,
-        "transactions": batch.transactions
+        "batch": {
+            "id": batch.id,
+            "color": batch.color,
+            "party": batch.party,
+            "date": str(batch.date) if batch.date else None,
+            "rate": batch.rate,
+            "meters": batch.meters,
+            "price": batch.price,
+        },
+        "transactions": [
+            {
+                "id": txn.id,
+                "action": txn.action,
+                "action_type": txn.action_type,
+                "meters": txn.meters,
+                "date": str(txn.date) if txn.date else None,
+                "rate": txn.rate,
+            }
+            for txn in batch.transactions
+        ]
     }

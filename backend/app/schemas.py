@@ -9,8 +9,6 @@ class BatchCreate(BaseModel):
     rate: int
     meters: float
     price: int
-    meters: float
-
 
 class TransactionCreate(BaseModel):
     batch_id: str
