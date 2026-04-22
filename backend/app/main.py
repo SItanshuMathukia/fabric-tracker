@@ -231,7 +231,7 @@ def create_batch(batch: BatchCreate, db: Session = Depends(get_db),  user=Depend
         batch_id=new_batch.id,
         action="create",
         date=batch.date,
-        meters=batch.meters
+        meters=batch.meters,
         rate=batch.rate
     )
 
