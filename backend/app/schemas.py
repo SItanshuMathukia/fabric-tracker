@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from datetime import date
+from typing import Optional
+
 
 class BatchCreate(BaseModel):
     id: str
@@ -16,6 +18,7 @@ class TransactionCreate(BaseModel):
     action_type: str
     meters: float
     date: date
+    rate: Optional[int]
 
 class UserCreate(BaseModel):
     name: str
