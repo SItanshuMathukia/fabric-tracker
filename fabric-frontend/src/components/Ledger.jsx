@@ -5,6 +5,8 @@ export default function Ledger() {
   const [batchId, setBatchId] = useState("");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showTransactions, setShowTransactions] = useState(false);
+
 
   const fetchLedger = async (e) => {
     if (e) e.preventDefault();
@@ -97,6 +99,13 @@ export default function Ledger() {
                 {data.batch?.party}
               </p>
             </div>
+
+            <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Rate</p>
+              <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+                {data.batch?.rate ?? "N/A"}
+              </p>
+            </div>
           </div>
 
           <div>
@@ -104,36 +113,48 @@ export default function Ledger() {
               Transactions
             </h3>
 
-            {data.transactions?.length > 0 ? (
-              <div className="space-y-3">
-                {data.transactions.map((txn) => (
-                  <div
-                    key={txn.id}
-                    className="rounded-2xl border border-gray-200 bg-gray-50 p-4 transition hover:shadow-sm dark:border-gray-800 dark:bg-gray-800"
-                  >
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                      <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Action</p>
-                        <p className="font-medium text-gray-900 dark:text-white">{txn.action}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Meters</p>
-                        <p className="font-medium text-gray-900 dark:text-white">{txn.meters}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Date</p>
-                        <p className="font-medium text-gray-900 dark:text-white">{txn.date}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Type</p>
-                        <p className="font-medium text-gray-900 dark:text-white">{txn.action_type}</p>
+
+            {showTransactions ? (
+              data.transactions?.length > 0 ? (
+                <div className="space-y-3">
+                  {data.transactions.map((txn) => (
+                    <div
+                      key={txn.id}
+                      className="rounded-2xl border border-gray-200 bg-gray-50 p-4 transition hover:shadow-sm dark:border-gray-800 dark:bg-gray-800"
+                    >
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Action</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{txn.action}</p>
+                        </div>
+
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Meters</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{txn.meters}</p>
+                        </div>
+
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Date</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{txn.date}</p>
+                        </div>
+
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Type</p>
+                          <p className="font-medium text-gray-900 dark:text-white">
+                            {txn.action_type || "-"}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400">No transactions found</p>
+              )
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">No transactions found</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Click "Show Transactions" to view transaction history.
+              </p>
             )}
           </div>
         </div>

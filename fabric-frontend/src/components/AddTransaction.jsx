@@ -4,6 +4,7 @@ import { addTransaction } from "../api/api";
 export default function AddTransaction() {
   const [batchId, setBatchId] = useState("");
   const [meters, setMeters] = useState("");
+  const [rate, setRate] = useState("");
   const [action, setAction] = useState("add");
   const [action_type, setAction_Type] = useState("");
   const [date, setDate] = useState("");
@@ -15,17 +16,25 @@ export default function AddTransaction() {
     try {
       setLoading(true);
 
-      await addTransaction({
+      const payload = {
         batch_id: batchId,
         action,
         action_type,
         date,
         meters: Number(meters),
-      });
+      };
+
+      if (action === "add") {
+        payload.rate = Number(rate);
+      }
+
+      await addTransaction(payload);
 
       alert("Transaction successful");
+
       setBatchId("");
       setMeters("");
+      setRate("");
       setAction("add");
       setAction_Type("");
       setDate("");
@@ -79,6 +88,16 @@ export default function AddTransaction() {
           onChange={(e) => setMeters(e.target.value)}
           className="w-full rounded-xl border border-gray-300 p-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
         />
+
+        {action === "add" && (
+          <input
+            placeholder="Rate"
+            type="number"
+            value={rate}
+            onChange={(e) => setRate(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 p-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          />
+        )}
 
         <button
           disabled={loading}
