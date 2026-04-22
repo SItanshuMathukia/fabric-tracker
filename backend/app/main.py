@@ -296,6 +296,13 @@ def get_ledger(batch_id: str, db: Session = Depends(get_db), user=Depends(get_cu
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
 
+    transactions = (
+        db.query(FabricTransaction)
+        .filter(FabricTransaction.batch_id == batch_id)
+        .order_by(FabricTransaction.date.desc())  # newest first
+        .all()
+    )
+
     return {
         "batch": {
             "id": batch.id,
@@ -313,8 +320,8 @@ def get_ledger(batch_id: str, db: Session = Depends(get_db), user=Depends(get_cu
                 "action_type": txn.action_type,
                 "meters": txn.meters,
                 "date": str(txn.date) if txn.date else None,
-                "rate": txn.rate,
+                "rate": getattr(txn, "rate", None),
             }
-            for txn in batch.transactions
+            for txn in transactions
         ]
     }
