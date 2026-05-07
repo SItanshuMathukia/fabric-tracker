@@ -18,7 +18,7 @@ class TransactionCreate(BaseModel):
     action_type: str
     meters: float
     date: date
-    rate: Optional[int]
+    rate: Optional[int] = None
 
 class UserCreate(BaseModel):
     name: str
