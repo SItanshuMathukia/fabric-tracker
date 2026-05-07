@@ -8,6 +8,10 @@ from app import models
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
+
+def normalize_batch_id(batch_id: str):
+    return batch_id.strip().upper()
+
 from app.core.security import (
     hash_password,
     verify_password,
@@ -211,8 +215,19 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
 # -----------------------------
 @app.post("/batches")
 def create_batch(batch: BatchCreate, db: Session = Depends(get_db),  user=Depends(get_current_user)):
+    normalized_id = normalize_batch_id(batch.id)
+
+    existing_batch = (
+        db.query(FabricBatch)
+        .filter(func.lower(FabricBatch.id) == normalized_id.lower())
+        .first()
+    )
+
+    if existing_batch:
+        raise HTTPException(status_code=400, detail="Batch ID already exists")
+    
     new_batch = FabricBatch(
-        id=batch.id,
+        id=normalized_id,
         color=batch.color,
         party = batch.party,
         date = batch.date,
@@ -246,7 +261,13 @@ def create_batch(batch: BatchCreate, db: Session = Depends(get_db),  user=Depend
 # -----------------------------
 @app.post("/transactions")
 def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    batch = db.query(FabricBatch).filter(FabricBatch.id == txn.batch_id).first()
+    normalized_batch_id = normalize_batch_id(txn.batch_id)
+
+    batch = (
+        db.query(FabricBatch)
+        .filter(func.lower(FabricBatch.id) == normalized_batch_id.lower())
+        .first()
+    )
 
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
@@ -272,7 +293,7 @@ def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db), user=
         batch.price = batch.rate * batch.meters
 
     new_txn = FabricTransaction(
-        batch_id=txn.batch_id,
+        batch_id=batch.id,
         action=txn.action,
         action_type=txn.action_type,
         meters=txn.meters,
@@ -292,14 +313,20 @@ def add_transaction(txn: TransactionCreate, db: Session = Depends(get_db), user=
 # -----------------------------
 @app.get("/ledger/{batch_id}")
 def get_ledger(batch_id: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    batch = db.query(FabricBatch).filter(FabricBatch.id == batch_id).first()
+    normalized_batch_id = normalize_batch_id(batch_id)
+
+    batch = (
+        db.query(FabricBatch)
+        .filter(func.lower(FabricBatch.id) == normalized_batch_id.lower())
+        .first()
+    )
 
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
 
     transactions = (
         db.query(FabricTransaction)
-        .filter(func.lower(FabricBatch.id) == batch_id.lower())
+        .filter(func.lower(FabricTransaction.batch_id) == batch_id.lower())
         .order_by(FabricTransaction.date.desc())  # newest first
         .all()
     )
