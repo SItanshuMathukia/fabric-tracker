@@ -299,7 +299,7 @@ def get_ledger(batch_id: str, db: Session = Depends(get_db), user=Depends(get_cu
 
     transactions = (
         db.query(FabricTransaction)
-        .filter(FabricTransaction.batch_id == batch_id)
+        .filter(func.lower(FabricBatch.id) == batch_id.lower())
         .order_by(FabricTransaction.date.desc())  # newest first
         .all()
     )
